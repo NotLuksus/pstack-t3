@@ -1,0 +1,92 @@
+{
+  "upstream": {
+    "repository": "https://github.com/cursor/plugins",
+    "branch": "main",
+    "path": "pstack"
+  },
+  "exclude": [
+    ".cursor-plugin/",
+    ".gitignore",
+    "README.md",
+    "plugin.json",
+    "assets/",
+    "automations/",
+    "docs/",
+    "skills/poteto-mode/scripts/"
+  ],
+  "renamePaths": {
+    "skills/poteto-mode/": "skills/p3-mode/",
+    "skills/poteto-help/": "skills/p3-help/",
+    "skills/setup-pstack/": "skills/setup-p3/",
+    "agents/poteto-agent.md": "agents/p3-agent.md"
+  },
+  "replaceText": {
+    "poteto-mode": "p3-mode",
+    "poteto-help": "p3-help",
+    "poteto-agent": "p3-agent",
+    "setup-pstack": "setup-p3",
+    "pstack-models.mdc": "p3-models.md"
+  },
+  "forbidden": [
+    {
+      "pattern": "\\bCursor\\b",
+      "why": "Cursor product reference; name the T3 Code mechanism"
+    },
+    {
+      "pattern": "\\.cursor/",
+      "why": "Cursor config path"
+    },
+    {
+      "pattern": "\\.mdc\\b",
+      "why": "Cursor rule file"
+    },
+    {
+      "pattern": "\\bTask tool\\b",
+      "why": "use delegate_task"
+    },
+    {
+      "pattern": "subagent_type",
+      "why": "use delegate_task"
+    },
+    {
+      "pattern": "run_in_background",
+      "why": "delegate_task is async by default"
+    },
+    {
+      "pattern": "\\bcloud agents?\\b",
+      "why": "use delegate_task or t3_thread_launch"
+    },
+    {
+      "pattern": "agent-transcripts",
+      "why": "use t3_thread_read / t3_thread_search"
+    },
+    {
+      "pattern": "\\bAskQuestion\\b",
+      "why": "ask plainly in the thread"
+    },
+    {
+      "pattern": "^/loop\\b|[\\s`(]/loop\\b",
+      "why": "use watch_pull_request or schedule_task"
+    },
+    {
+      "pattern": "\\b(claude-(opus|sonnet|haiku|fable)|gpt-\\d|grok-\\d|gemini-\\d)[\\w.-]*",
+      "why": "model slug; resolve roles from orchestrator_capabilities via p3-models.md"
+    }
+  ],
+  "scan": {
+    "extensions": [
+      ".md"
+    ],
+    "skip": [
+      "LICENSE",
+      "README.md",
+      "AGENTS.md"
+    ]
+  },
+  "frontmatterDenied": [
+    "icon",
+    "color",
+    "mode",
+    "reminder"
+  ]
+}

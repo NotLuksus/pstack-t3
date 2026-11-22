@@ -1,6 +1,13 @@
 ---
 name: make-bot-ui
+<<<<<<< HEAD
 description: "Use when building a custom UI (page, dashboard, buttons) that should wake the agent over a webhook, when the user must provide a webhook secret, or when exposing that UI on Tailscale."
+=======
+description: >-
+  Use when building a custom UI (page, dashboard, buttons) that should wake a
+  Grok Bot over a webhook, when the user must provide a webhook sender key, or
+  when exposing that UI on Tailscale.
+>>>>>>> 4ea790851ec55cbb908ce22ea8247eb3428bc472
 disable-model-invocation: true
 ---
 

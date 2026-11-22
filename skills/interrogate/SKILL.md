@@ -1,36 +1,32 @@
 ---
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
+description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Adversaries try to break a change or design, and only findings proven by a run survive."
 disable-model-invocation: true
 ---
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas.
+Adversaries try to break a change or a design. A finding survives only when a run proves it. Report the findings. Do not apply fixes.
 
-The deliverable is a synthesized verdict. Do NOT auto-apply changes.
+## Frame
 
-## Step 1, Determine Scope
+The scope is what the user names. Otherwise it is the branch diff from its merge base with the base branch, through the working tree. State the intent with the **in-your-own-words** skill, from the user's message, the commits, and the PR description. Ask the user when the intent is unclear.
 
-Identify what to review from context:
+## Fan out
 
-- If the user points at specific files or a diff, use that
-- If on a feature branch, run `git diff main...HEAD` (or the appropriate base branch) for the full changeset
-- If the user's message references recent work, gather the relevant files
+Run Phase A steps 3 and 4 and Phase B of the **arena** skill, with four changes. Read the `interrogate reviewers` line in place of `arena runners`. Copy the scope's uncommitted changes into each worktree. Spawn each adversary as `generalPurpose`. In place of the arena task and rationale, give each adversary the scope, the intent, and this brief:
 
-Package the diff (or file contents) plus any surrounding context files the reviewers need to understand the code.
+> Break this change. Prove each finding with a run against the real code, such as a failing test, a repro script, or command output that shows the wrong behavior. For a design or plan, run a prototype or probe the current tree. Keep repros in your own worktree. Report each finding with a title, the exact command, the output it printed, and the output the intent requires. Leave out anything you did not run. That covers style, naming, structure, and risks that need a future change to matter. No findings is a valid result.
 
-## Step 2, State the Intent
+## Verify
 
-Before spawning reviewers, state the intent explicitly. Derive this from:
+Verify each finding per arena Phase F by rerunning its command. Keep a finding when the output shows the failure and the failure breaks the intent. Drop the rest. Merge findings that share a root cause.
 
-- The user's message
-- Commit messages
-- PR description if one exists
-- The code itself
+Skip arena Phases C, D, and E. Adversaries find different failures, so the verdict keeps every verified finding, not one adversary's list.
 
-Write one clear paragraph. If you're unsure about the intent, ask the user before proceeding.
+## Output
 
+<<<<<<< HEAD
 ## Step 3, Spawn Reviewers
 
 Launch all reviewers in a single turn, one `delegate_task` per reviewer. Use the `interrogate reviewers` line in `p3-models.md`, one reviewer per entry, labeled Reviewer A, B, C, and so on for the configured entry count. Resolve each entry's provider and model through `orchestrator_capabilities`. If the line is missing, run `setup-p3` first.
@@ -102,3 +98,8 @@ Present the verdict in this structure:
 
 ### Agreement Map
 [Where did models agree, where did they diverge, and what does the pattern of agreement/disagreement tell us?]
+=======
+- **Intent**: the restatement.
+- **Findings**: for each verified finding, the command, its output, how it breaks the intent, and the adversaries that found it. Say "no verified findings" when none survive.
+- **Dropped**: for each adversary, the count of dropped findings and why.
+>>>>>>> 4ea790851ec55cbb908ce22ea8247eb3428bc472

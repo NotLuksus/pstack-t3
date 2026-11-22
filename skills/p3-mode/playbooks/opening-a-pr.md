@@ -2,10 +2,15 @@
 
 Invoked at the end of every other playbook.
 
+<<<<<<< HEAD
 **Worktree.** Work from a git worktree off main. Delegated workers inherit it. Parallel workers on the same branch each get their own worktree with `delegate_task` and `isolation: "worktree"`, one writer per worktree, or `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
+=======
+Work from a git worktree off trunk, and keep unrelated work out of it. Rebase into small, landable commits. Run `/deslop` from `cursor-team-kit` over the diff before commit.
+>>>>>>> 4ea790851ec55cbb908ce22ea8247eb3428bc472
 
-**Commits.** Commit liberally. Rebase into small, ordered commits before opening PRs. Each commit is a future PR: landable, ordered to tell the story. Amend when the fix belongs in a just-made commit. New commit when separable.
+Title: `type(scope): subject`, naming a real symbol when one carries the change. Body: a one-minute briefing under 40 lines with these `##` headings in order, dropping empty ones: `## Why`, `## What changed`, `## Scope`, `## Tradeoffs` (only rejected alternatives a reviewer would otherwise ask about), `## Blast Radius`, `## Verification`.
 
+<<<<<<< HEAD
 **PRs.** Run the **unslop** skill over the diff before commit. Run the **no-comments** skill before review. Write every PR title, PR description, and commit body with the **technical-writing** skill, then apply the **unslop** skill. Apply every technical-writing layer except Diátaxis. Use one word for each action, keep articles, and avoid `-ing` when a plain verb works.
 
 **Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area, such as `pstack-t3` or `p3-mode`, as the scope. Keep the subject short and imperative. Name a real symbol when one carries the change. For example, `fix(p3-mode): retarget opening-a-pr babysit trigger`. Do not add a trailing period.
@@ -34,3 +39,6 @@ After these sections, attach videos or screenshots when they prove a claim. Do n
 **Babysit.** Opening a PR does not start a babysit. Post the URL and keep building. Finish the phase or stack first. Run a separate babysit pass only when the user asks for one after the whole stack exists. That pass arms `watch_pull_request` and ends the turn; T3 wakes the thread when checks finish, a comment lands, or the branch conflicts. A babysit for each new PR stalls the build and spends checks on commits that later waves restart. Push back when feedback drifts from intent.
 
 A delegated worker that opens a PR runs `interrogate`, the **unslop** skill, and the **no-comments** skill, links the PR with `link_pull_request`, and posts the URL. Then it returns to the parent without babysitting, unless it is an Autopilot-full or Autopilot-stack owner. That owner's brief assigns the babysit loop and is the ask `playbooks/babysit.md` waits for. The owner starts the loop after its code-ready report and reports merge-ready or STACK-READY as its playbook says. The rules here and in `playbooks/babysit.md` that hold babysitting until a whole stack is built do not apply to that owner.
+=======
+Stack follow-ups by base branch. Open PRs ready, through the run's PR tool with `draft: false`. Without one, use `gh pr create` without `--draft`, or `origin pr create --status open` when Origin's CLI resolves the repository. Opening a PR does not start a babysit.
+>>>>>>> 4ea790851ec55cbb908ce22ea8247eb3428bc472

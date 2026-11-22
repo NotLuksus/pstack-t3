@@ -18,14 +18,26 @@
     "skills/poteto-mode/": "skills/p3-mode/",
     "skills/poteto-help/": "skills/p3-help/",
     "skills/setup-pstack/": "skills/setup-p3/",
-    "agents/poteto-agent.md": "agents/p3-agent.md"
+    "agents/poteto-agent.md": "agents/p3-agent.md",
+    "skills/tdd/": "skills/p3-tdd/",
+    "skills/teach/": "skills/p3-teach/"
   },
   "replaceText": {
     "poteto-mode": "p3-mode",
     "poteto-help": "p3-help",
     "poteto-agent": "p3-agent",
     "setup-pstack": "setup-p3",
-    "pstack-models.mdc": "p3-models.md"
+    "pstack-models.mdc": "p3-models.md",
+    "name: tdd\n": "name: p3-tdd\n",
+    "name: teach\n": "name: p3-teach\n",
+    "../tdd/SKILL.md": "../p3-tdd/SKILL.md",
+    "../teach/SKILL.md": "../p3-teach/SKILL.md",
+    "`/tdd`": "`/p3-tdd`",
+    "`/teach`": "`/p3-teach`",
+    "`/teach ": "`/p3-teach ",
+    "/tdd it": "/p3-tdd it",
+    "then /teach ": "then /p3-teach ",
+    "**tdd** skill": "**p3-tdd** skill"
   },
   "forbidden": [
     {

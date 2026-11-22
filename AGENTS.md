@@ -23,7 +23,7 @@ If you are a delegated worker, your brief names exactly one file. Write only tha
 | `AskQuestion` | Ask plainly in the thread. `t3_pending_request_list`/`t3_pending_request_read`/`t3_pending_request_respond` answer questions in other threads. |
 | `control-ui`, `control-cli` (from cursor-team-kit) | `preview_*` browser tools (`preview_act` clicks, types, presses and scrolls) and `device_*` simulator tools; `preview_recording_start`/`preview_recording_stop` and `device_screenshot` for evidence; `html_preview` and `html_render` show a file to the user. |
 | `~/.cursor/rules/pstack-models.mdc`, `/add-plugin` | `setup-p3` writes `p3-models.md`; install is a symlink of `skills/*` into `~/.agents/skills/`, or a pin per skill (see README). |
-| `poteto-mode`, `poteto-agent`, `poteto-help`, `setup-pstack` | `p3-mode`, `agents/p3-agent.md`, `p3-help`, `setup-p3`. |
+| `poteto-mode`, `poteto-agent`, `poteto-help`, `setup-pstack`, `tdd`, `teach` | `p3-mode`, `agents/p3-agent.md`, `p3-help`, `setup-p3`, `p3-tdd`, `p3-teach` (renamed by `sync/config.json`). |
 | Cursor custom modes ("press option+enter") | Skills are invoked by name (`/p3-mode`). No mode toggles. |
 
 Everything else in pstack transfers as written: the principles, the playbook shapes, the brief template, the reply style, the autonomy rules. Adopt it.

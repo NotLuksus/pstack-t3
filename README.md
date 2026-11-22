@@ -30,7 +30,7 @@ maps each role to a provider and model you have. Use `/p3-mode` for rigorous wor
 
 | Branch | Holds |
 |---|---|
-| `upstream` | pstack as published, after `sync/transform.ts` (Cursor packaging dropped, `poteto-*` names renamed). `.upstream-rev` names the upstream commit. |
+| `upstream` | pstack as published, after `sync/transform.ts` (Cursor packaging dropped, `poteto-*` names renamed, `tdd` and `teach` renamed `p3-tdd` and `p3-teach` so they install beside [mattpocock/skills](https://github.com/mattpocock/skills)' skills of those names). `.upstream-rev` names the upstream commit. |
 | `main` | `upstream` plus the T3 Code adaptation, as commits on top. |
 
 The **Sync upstream pstack** workflow runs daily and on demand. It mirrors new upstream commits

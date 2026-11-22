@@ -31,23 +31,31 @@ git fetch --quiet origin upstream
 synced=$(git show origin/upstream:.upstream-rev 2>/dev/null || true)
 vendor=origin/upstream
 
-if [[ "$rev" != "$synced" ]]; then
-  git worktree add --quiet --detach "$work/vendor" origin/upstream
-  git -C "$work/vendor" rm -rq --ignore-unmatch .
-  node sync/transform.ts "$work/up" "$work/tree"
-  cp -a "$work/tree/." "$work/vendor/"
-  echo "$rev" >"$work/vendor/.upstream-rev"
-  git -C "$work/vendor" add -A
+# Transform on every run, not only when upstream moved: a change to sync/config.json or
+# sync/transform.ts must reach the upstream branch too.
+git worktree add --quiet --detach "$work/vendor" origin/upstream
+git -C "$work/vendor" rm -rq --ignore-unmatch .
+node sync/transform.ts "$work/up" "$work/tree"
+cp -a "$work/tree/." "$work/vendor/"
+echo "$rev" >"$work/vendor/.upstream-rev"
+git -C "$work/vendor" add -A
+if ! git -C "$work/vendor" diff --cached --quiet; then
   {
-    echo "Sync pstack from cursor/plugins@$short"
-    echo
-    if [[ -n "$synced" ]] && git -C "$work/up" cat-file -e "$synced^{commit}" 2>/dev/null; then
-      git -C "$work/up" log --format='- %h %s' "$synced..$rev" -- "$path" | head -100
+    if [[ "$rev" == "$synced" ]]; then
+      echo "Re-apply the transform to cursor/plugins@$short"
+      echo
+      echo "sync/transform.ts or sync/config.json changed on main."
     else
-      echo "Upstream: $repository/tree/$rev/$path"
+      echo "Sync pstack from cursor/plugins@$short"
+      echo
+      if [[ -n "$synced" ]] && git -C "$work/up" cat-file -e "$synced^{commit}" 2>/dev/null; then
+        git -C "$work/up" log --format='- %h %s' "$synced..$rev" -- "$path" | head -100
+      else
+        echo "Upstream: $repository/tree/$rev/$path"
+      fi
     fi
   } >"$work/message"
-  git -C "$work/vendor" commit --quiet --allow-empty -F "$work/message"
+  git -C "$work/vendor" commit --quiet -F "$work/message"
   git -C "$work/vendor" push --quiet origin HEAD:refs/heads/upstream
   vendor=$(git -C "$work/vendor" rev-parse HEAD)
   summary "Mirrored cursor/plugins@$short onto \`upstream\`."

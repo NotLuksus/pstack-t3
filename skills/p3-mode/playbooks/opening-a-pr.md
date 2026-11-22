@@ -2,13 +2,13 @@
 
 Invoked at the end of every other playbook.
 
-**Worktree.** Work from a git worktree off main. Delegated workers inherit it. Parallel workers on the same branch each get their own worktree with `t3_thread_launch` and a `workspaceStrategy`, one writer per worktree, or `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
+**Worktree.** Work from a git worktree off main. Delegated workers inherit it. Parallel workers on the same branch each get their own worktree with `delegate_task` and `isolation: "worktree"`, one writer per worktree, or `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
 
 **Commits.** Commit liberally. Rebase into small, ordered commits before opening PRs. Each commit is a future PR: landable, ordered to tell the story. Amend when the fix belongs in a just-made commit. New commit when separable.
 
 **PRs.** Run the **unslop** skill over the diff before commit. Run the **no-comments** skill before review. Write every PR title, PR description, and commit body with the **technical-writing** skill, then apply the **unslop** skill. Apply every technical-writing layer except Diátaxis. Use one word for each action, keep articles, and avoid `-ing` when a plain verb works.
 
-**Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area, such as `p3-stack` or `p3-mode`, as the scope. Keep the subject short and imperative. Name a real symbol when one carries the change. For example, `fix(p3-mode): retarget opening-a-pr babysit trigger`. Do not add a trailing period.
+**Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area, such as `pstack-t3` or `p3-mode`, as the scope. Keep the subject short and imperative. Name a real symbol when one carries the change. For example, `fix(p3-mode): retarget opening-a-pr babysit trigger`. Do not add a trailing period.
 
 **Descriptions.** The PR body is a briefing, not the lab notebook. A reviewer who has the diff should learn why the change exists, what it leaves out, what it could break, and how you proved it works, in under a minute. Write short, simple sentences with few identifiers. Do not write walls of text. The squash commit body is the PR body. If the body would make the squash commit longer than about 40 lines, cut the body.
 

@@ -27,7 +27,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one turn with `delegate_task`, `mode: "async"`, and the step 4 target, left unset for `auto` or `inherit`. Use `t3_thread_launch` with a `workspaceStrategy` only when a worker needs its own thread, worktree, or branch. One writer per worktree.
+Spawn all N workers in one turn with `delegate_task`, and the step 4 target, left unset for `auto` or `inherit`. Use `delegate_task` with `isolation: "worktree"` only when a worker needs its own thread, worktree, or branch. One writer per worktree.
 
 Every brief stands alone. Child agents get only the brief, never the parent's context. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
 
@@ -35,7 +35,7 @@ If a worker drops out, proceed with N-1 and note it.
 
 ## Phase C: Aggregate
 
-Drain with `task_status` until every worker is terminal. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Wait until every worker's completion has woken you; never poll. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
 
 Keep a compact result table, one-line evidenced issues, and explicit gaps or dropouts.
 

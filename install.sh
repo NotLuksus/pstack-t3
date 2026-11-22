@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install p3-stack skills for T3 Code.
+# Install pstack-t3 skills for T3 Code.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

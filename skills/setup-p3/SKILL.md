@@ -1,12 +1,12 @@
 ---
 name: setup-p3
-description: Configure which models p3-stack uses per role and at what reasoning budget. Detects your available models and writes p3-models.md, which overrides the skill defaults. Use for /setup-p3, "configure p3 models", "p3 budget", or changing p3-stack's model choices.
+description: Configure which models pstack-t3 uses per role and at what reasoning budget. Detects your available models and writes p3-models.md, which overrides the skill defaults. Use for /setup-p3, "configure p3 models", "p3 budget", or changing pstack-t3's model choices.
 disable-model-invocation: true
 ---
 
 # Setup p3
 
-Write `p3-models.md`, a file that sets p3-stack's model per role. Default location is the current project root. Offer `~/.agents/p3-models.md` as the global option, and ask which one. A project file wins over the global one.
+Write `p3-models.md`, a file that sets pstack-t3's model per role. Default location is the current project root. Offer `~/.agents/p3-models.md` as the global option, and ask which one. A project file wins over the global one.
 
 ## Steps
 

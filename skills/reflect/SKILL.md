@@ -22,7 +22,7 @@ Reviewers get only their brief, never the parent's context. Pass the thread id a
 
 ### 2. Delegate three reviewers in parallel
 
-One turn, three `delegate_task` calls with `mode: "async"`. Reviewers need tool access for context lookups (tickets, chat threads, observability traces referenced in the transcript), so do not restrict their tools.
+One turn, three `delegate_task` calls. Reviewers need tool access for context lookups (tickets, chat threads, observability traces referenced in the transcript), so do not restrict their tools.
 
 Resolve each model from the role line in `p3-models.md` via `orchestrator_capabilities`. Never hardcode a slug.
 
@@ -32,7 +32,7 @@ Resolve each model from the role line in `p3-models.md` via `orchestrator_capabi
 | Tooling | `reflect tooling` | `references/tooling-reviewer.md` |
 | Divergent | `reflect judgment, divergent, synthesizer` | `references/divergent-reviewer.md` |
 
-Pass each template verbatim as the brief, substituting the thread id or digest where marked. Drain with `task_status`; reviewers return findings in their task result.
+Pass each template verbatim as the brief, substituting the thread id or digest where marked. Each completion wakes you; reviewers return findings in their task result.
 
 ### 3. Synthesize
 

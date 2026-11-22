@@ -28,7 +28,7 @@ Decompose into atomic, independently-landable units. Sequence riskiest-unknown-f
 
 - Build the verification harness before the work, with the baseline captured from the pre-change state, so the check reads as "old value vs new value".
 - For one-way-door design decisions, run the **architect** skill (it runs **arena**). Skip it for mechanical work whose shape is already concrete. A second arena over a settled design is over-engineering (the **laziness-protocol** principle skill).
-- Decide what fans out. Parallelize only across seams, and give each writer its own worktree via `t3_thread_launch` with a `workspaceStrategy`, one writer per worktree (the **separate-before-serializing-shared-state** principle skill). Don't over-fan.
+- Decide what fans out. Parallelize only across seams, and give each writer its own worktree via `delegate_task` with `isolation: "worktree"`, one writer per worktree (the **separate-before-serializing-shared-state** principle skill). Don't over-fan.
 - Every `delegate_task` brief stands alone: the child gets only the brief, never your context. Read-only workers get a brief that says read-only, inspect only, no writes. Resolve models from named roles in `p3-models.md` via `orchestrator_capabilities`; never hardcode a slug.
 - Write the designed phase list down. That list is what the human reviews.
 
@@ -41,7 +41,7 @@ Apply the **sequence-verifiable-units** principle skill, verifying each unit bef
 
 - Verify by inspecting the artifact, never a self-report. When something passes too easily, suspect the observation method before the system.
 - Pair delegated work with a judge. If a worker games the gate, reset and harden the contract. If the gate itself is wrong, fix the gate in its own change rather than routing around it.
-- Drain background work with `task_status`. For a PR in flight, arm `watch_pull_request`, end the turn, and triage on wake; use `schedule_task` for recurring checks.
+- Delegated work wakes you on completion; never poll it. For a PR in flight, arm `watch_pull_request`, end the turn, and triage on wake; use `schedule_task` for recurring checks.
 - A verdict is VERIFIED, NOT VERIFIED, or INCONCLUSIVE. Inconclusive is not a pass. Don't hide a negative.
 
 ## Phase D: Keep the audit trail

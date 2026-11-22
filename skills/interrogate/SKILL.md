@@ -33,7 +33,7 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single turn, one `delegate_task` per reviewer with `mode: "async"`. Use the `interrogate reviewers` line in `p3-models.md`, one reviewer per entry, labeled Reviewer A, B, C, and so on for the configured entry count. Resolve each entry's provider and model through `orchestrator_capabilities`. If the line is missing, run `setup-p3` first.
+Launch all reviewers in a single turn, one `delegate_task` per reviewer. Use the `interrogate reviewers` line in `p3-models.md`, one reviewer per entry, labeled Reviewer A, B, C, and so on for the configured entry count. Resolve each entry's provider and model through `orchestrator_capabilities`. If the line is missing, run `setup-p3` first.
 
 For each reviewer:
 - The brief is self-contained. A delegated reviewer gets only the brief, never your context.
@@ -48,7 +48,7 @@ Read `references/reviewer-prompt.md` and fill in the template with:
 3. The review rubric from `references/rubric.md`
 4. The code-quality lens from `references/code-quality-review.md`
 
-The same filled template goes to all reviewers, so every model applies the code-quality lens. Drain results with `task_status`.
+The same filled template goes to all reviewers, so every model applies the code-quality lens. Each completion wakes you; read the result with `task_status`.
 
 ## Step 4, Synthesize
 

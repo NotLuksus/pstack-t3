@@ -21,9 +21,9 @@ When in doubt, take the simple path.
 
 ## Step 2a. Explore (complex questions only)
 
-Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message, `mode: "async"`, model from the `how explorer` role.
+Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message, model from the `how explorer` role.
 
-Each explorer's brief is `references/explorer-prompt.md` with its angle filled in. Drain with `task_status`, then go to Step 3.
+Each explorer's brief is `references/explorer-prompt.md` with its angle filled in. When every completion has woken you,  go to Step 3.
 
 ## Step 2b. Direct Explain (simple questions)
 

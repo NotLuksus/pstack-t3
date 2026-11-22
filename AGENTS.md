@@ -13,7 +13,7 @@ If you are a delegated worker, your brief names exactly one file. Write only tha
 | pstack | pstack-t3 |
 |---|---|
 | `Task` tool, `subagent_type`, `run_in_background` | `delegate_task` with a self-contained brief. It is async by default: end the turn, and each completion wakes you; read it with `task_status`. Never poll a running task. `task_cancel` to stop |
-| Model slugs (`claude-opus-5-5-max`, `grok-4.7-xhigh-fast`, `gpt-5.6-sol-max`) | Named roles resolved from `orchestrator_capabilities` by `setup-p3` (role names below). Never hardcode a slug. |
+| Model slugs | Named roles resolved from `orchestrator_capabilities` by `setup-p3` (role names below). Never hardcode a model. |
 | "cloud agent", `environment: "cloud"`, `cloud_base_branch` | A delegated child task. Use `t3_thread_launch` only when the worker needs its own top-level thread, worktree, or branch. |
 | "each worker gets its own worktree or branch" | `delegate_task` with `isolation: "worktree"`. A worker that needs its own top-level thread: `t3_thread_launch` with `workspaceStrategy`. One writer per worktree. |
 | `/loop`, poll loops, `scripts/watch-pr` | `watch_pull_request`: T3 watches the PR and wakes the thread on checks finishing, new comments, or conflicts. Arm it, end the turn, triage on wake. For other cadences use `schedule_task`. |
@@ -30,11 +30,9 @@ Everything else in pstack transfers as written: the principles, the playbook sha
 
 ## Role names
 
-Code work reads its line in `p3-models.md`: `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`. Prose and judgment read `judgment and prose`; the hardest changes read `hardest tasks`.
+`p3-models.md` (written by `setup-p3`) has one line per role. Code work reads its playbook's line: `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`. Prose and judgment read `judgment and prose`. Panels read `arena runners`, `arena cross-judge pool`, `interrogate reviewers`; fan-out and verification read `swarm workers`.
 
-Panels and investigators: `how explorer`, `how explainer`, `why investigators`, `why synthesizer`, `arena runners`, `arena cross-judge pool`, `swarm workers`, `architect runners`, `interrogate reviewers`, `reflect tooling`, `reflect judgment, divergent, synthesizer`.
-
-Keep these names exactly.
+Keep these names exactly; they follow upstream's.
 
 ## Writing rules
 
@@ -81,6 +79,6 @@ not in a hand edit, so every later sync repeats them.
 
 ## Definition of done for a skill
 
-1. Every step names a T3 mechanism or a vendor-neutral habit. Grep for `Cursor`, `Task tool`, `subagent_type`, `cloud agent`, `.cursor`, `agent-transcripts`, `AskQuestion`, `icon:`, `claude-`, `grok-`, `gpt-`, `/loop`. None may remain.
+1. Every step names a T3 mechanism or a vendor-neutral habit. `node sync/validate.ts` checks the mechanical part (Cursor names and paths, model slugs, Cursor-only frontmatter, missing references); read for the rest.
 2. It is shorter than the pstack source unless the T3 rewrite genuinely needs the lines.
 3. Frontmatter matches the rules above, and references to other skills resolve to files in this repo.

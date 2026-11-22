@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-This skill orchestrates three others: an inline mining pass (see step 1), the `authoring-a-skill` playbook (authoring), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
+This skill orchestrates three others: an inline mining pass (see step 1), the `authoring-a-skill` playbook of **p3-mode** (authoring), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
 
 ## Flow
 
@@ -28,7 +28,7 @@ Update mode changes the rest of the flow:
 
 Scope the mining to the current project before fanning out. Use `t3_thread_search` and `t3_thread_read` on this project's threads only. Don't read threads from other projects. That crosses project boundaries and reads private chats from unrelated work.
 
-Survey recent threads within that scope for recurring patterns. Run multiple parallel `delegate_task` briefs across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Every brief stands alone: child agents get only the brief, never the parent's context. Each brief names the project, its slice, and the signals below; says read-only, inspect only, no writes; and asks for a short structured list of patterns seen with thread pointers. Drain with `task_status`. Default signals worth hunting:
+Survey recent threads within that scope for recurring patterns. Run multiple parallel `delegate_task` workers across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Pick each subagent's reasoning level for the job, per the Subagents section of the **p3-mode** skill. Every brief stands alone, since a worker gets only its brief. Each slice mining worker reads the threads the parent names, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)
@@ -64,16 +64,17 @@ The **p3-mode** skill shows the shape. Read it for granularity. Don't copy its c
 
 ### 4. Draft the skill
 
-Use the `authoring-a-skill` playbook to author the skill. Placement:
+Use the `authoring-a-skill` playbook of **p3-mode** to author the skill. Placement:
 
 - Path: preserve an existing mode skill's category. For a new mode, use `.agents/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle. Otherwise default to `.agents/skills/<handle>-mode/SKILL.md` in the project (or `~/.agents/skills/<handle>-mode/` if the user prefers a personal skill).
 - Handle: the user's first name or chosen identifier.
 - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
+- Frontmatter formatting: valid YAML. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
 - Frontmatter `disable-model-invocation: true` by default. Opt out only if the user explicitly wants their mode to apply on every turn.
 
 ### 5. Iterate on prose
 
-Apply the **unslop** skill and the playbook's writing guidelines to every line.
+Apply the **unslop** skill and the `authoring-a-skill` playbook's writing guidelines to every line.
 
 Show the draft to the user and take feedback. Expect multiple iterations. Cut ruthlessly. A mode skill is not a manual.
 
@@ -92,9 +93,12 @@ Work in a worktree off main. Commit and open a PR. Don't push to main directly.
 
 ## Evaluation
 
-A `-mode` skill is subjective output. A test/iterate benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship. Optimize the description only if trigger accuracy turns out to be a problem in practice.
+A `-mode` skill is subjective output. A test/iterate benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
+
+Run a description-optimization loop only if the skill's trigger accuracy turns out to be a problem in practice.
 
 ## When not to use
 
 - User wants a task-specific skill (not working conventions): the `authoring-a-skill` playbook alone, no mining required.
 - User wants to capture one narrow workflow (e.g. "how I write commit messages"). That's a regular skill, not a mode skill.
+

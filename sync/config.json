@@ -71,6 +71,18 @@
     {
       "pattern": "\\b(claude-(opus|sonnet|haiku|fable)|gpt-\\d|grok-\\d|gemini-\\d)[\\w.-]*",
       "why": "model slug; resolve roles from orchestrator_capabilities via p3-models.md"
+    },
+    {
+      "pattern": "cursor-team-kit|/deslop\\b|\\bcontrol-(ui|cli)\\b",
+      "why": "Cursor team-kit skill; use unslop or preview_*/device_*"
+    },
+    {
+      "pattern": "\\bgeneralPurpose\\b|readonly: true|\\bProject worker",
+      "why": "Cursor subagent type; use delegate_task"
+    },
+    {
+      "pattern": "cursor\\.sh|Custom Modes?\\b|Agents Window",
+      "why": "Cursor product surface"
     }
   ],
   "scan": {

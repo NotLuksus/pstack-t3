@@ -6,11 +6,7 @@ disable-model-invocation: true
 
 # Benchmark checklist
 
-<<<<<<< HEAD
-Use this when you produce a performance number: a PR's before and after, a regression claim, a hillclimb harness, or a library or config choice. The **principle-explain-the-number** skill says why. Answer each question below with evidence from a run, not from a guess about the code.
-=======
 Use this when you produce a performance number: a PR's before and after, a regression claim, a hillclimb harness, or a library or config choice. Answer each question with evidence from a run, not a guess about the code.
->>>>>>> 4ea790851ec55cbb908ce22ea8247eb3428bc472
 
 For a quick ballpark the user asked for, one run is enough. Still check questions 4 and 7, and say that it is one run. Skip the rest unless that run looks wrong. A choice between options is never a ballpark.
 

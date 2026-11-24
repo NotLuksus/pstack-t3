@@ -24,24 +24,21 @@ Infer the need from the message and the conversation. A named situation, such as
 
 Check the state that changes the answer, and mention it only when it does:
 
-- No `~/.cursor/rules/p3-models.md` means `/setup-p3` hasn't run for this user, so every role uses its default model.
+- No model table in the user's instructions (models scored for Cost, Intelligence and Taste) means every role runs on the parent model.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `/create-verification-skill` when the question is about proving a change works.
 - No formal verification skill in the project means no property is checked past what tests reach. Mention `/create-formal-verification-skill` when the question is about a race, an invariant, or another case tests rarely hit. When one exists and the code it covers changed after the commit it records as last in sync, mention `/maintain-formal-verification-skill` if the question touches that code.
 
-When the model rule is missing and it matters, ask whether the user wants to pick a model for each role and a reasoning budget now. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Ask at most once per chat. If the need is also unclear, ask both questions together. Offer two choices:
-
-- Now: give them `/setup-p3` to type, and answer their question too.
-- Later: answer their question, and add one line saying every role keeps its default model until they run `/setup-p3`.
+When the table is missing and it matters, say that pstack-t3 picks each role's model from a model table in the user's agent instructions, and give them `/setup-p3` to type. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Say it at most once per thread, and answer their question too.
 
 ## Get set up
 
-1. Install with `/add-plugin pstack` in chat, or from Customize in the sidebar.
-2. Run [`/setup-p3`](../setup-p3/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new chats. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
+1. Install: clone the repository and run `./install.sh`, which links every skill into `~/.agents/skills/` (or `--project <repo>` for one project), or pin the skill directories with whatever manages the user's skills.
+2. Run [`/setup-p3`](../setup-p3/SKILL.md). It checks that the user's instructions carry the model table every role resolves against, and shows which model each role gets today. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `/p3-mode`, a goal, and a check that can pass or fail.
 
 Installing changes nothing until the user invokes a skill. Only `/setup-p3` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
-If cost is the worry, say where the tokens go and how to spend fewer. pstack spends extra tokens on subagents and review panels. Rerun `/setup-p3` and pick a smaller budget or cheaper models. A role set to `auto` or `inherit-parent` runs on the chat's model, which saves tokens when the chat runs on Auto or a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `/p3-mode` for work that needs rigor.
+If cost is the worry, say where the tokens go and how to spend fewer. pstack-t3 spends extra tokens on delegated workers and review panels. Each role takes the cheapest model in the user's model table that meets its minimums, on the provider with the most headroom, so the table's cost scores and rules steer the spend. A panel runs one worker per seat. Save `/p3-mode` for work that needs rigor.
 
 pstack is built for Cursor, and it also installs in Claude Code with `/plugin marketplace add cursor/plugins`, then `/plugin install pstack@cursor-plugins`. There, each command takes a `pstack:` prefix, such as `/pstack:p3-mode`. The [Claude Code adapter](../../docs/harness/claude-code.md) maps the Cursor names, and a step that needs a Cursor-only feature, such as Bugbot or Automations, is skipped with a one-line note.
 
@@ -68,6 +65,7 @@ The default answer is `/p3-mode`, which runs most of the others when its steps n
 | Do any non-trivial task with rigor | [`/p3-mode`](../p3-mode/SKILL.md) |
 | Check that the agent understood their goal and the problem before it starts | [`/in-your-own-words`](../in-your-own-words/SKILL.md) |
 | Get a prompt rewritten deeper, not bigger, before sending it: what a top professional would add, their raw material and methods, and an outside check. It returns the prompt and doesn't do the task | [`/sharpen`](../sharpen/SKILL.md) |
+| Learn the expert words for what they're building, including words borrowed from neighboring fields, with every cited source checked, and get their description rewritten with them | [`/reframe`](../reframe/SKILL.md) |
 | Know how code works now, or where new code should live | [`/how`](../how/SKILL.md) |
 | Know why code is shaped this way, or where a number came from | [`/why`](../why/SKILL.md) |
 | Understand a change or subsystem, explained plainly | [`/p3-teach`](../p3-teach/SKILL.md) |
@@ -93,7 +91,7 @@ The default answer is `/p3-mode`, which runs most of the others when its steps n
 | Vet a performance number before reporting or acting on it | [`/benchmark-checklist`](../benchmark-checklist/SKILL.md) |
 | Run a large or cross-cutting change, or one to review after stepping away | [`/figure-it-out`](../figure-it-out/SKILL.md) |
 | Keep a decision log during a run, and review it afterward | [`/show-me-your-work`](../show-me-your-work/SKILL.md) |
-| Pick a model for each role and a reasoning budget | [`/setup-p3`](../setup-p3/SKILL.md) |
+| See which model each role gets from the model table in their instructions | [`/setup-p3`](../setup-p3/SKILL.md) |
 | Turn their own working habits into a personal mode skill | [`/automate-me`](../automate-me/SKILL.md) |
 | Turn what a finished task taught into skill edits | [`/reflect`](../reflect/SKILL.md) |
 | Stop agents from repeating the same mistakes in this repo | [`/correct`](../correct/SKILL.md) |
@@ -139,7 +137,7 @@ Principles are one-rule skills that `/p3-mode` reads and cites in its replies. T
 |---|---|
 | The mode stopped applying after a few turns | It was started with Enter. Start it as a Custom Mode, or start each task with `/p3-mode`. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
-| A new model choice had no effect | The rule from `/setup-p3` applies to new chats. Start one. |
+| A new model choice had no effect | The model table lives in the user's agent instructions, which load when a thread starts. Start a new thread. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
 | A skill didn't load on its own | Only `/setup-p3` loads from the user's words. The others load when the user types them or when `/p3-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree, or run them as cloud agents, which each get their own machine. |

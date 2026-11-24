@@ -1,8 +1,6 @@
 ---
 name: p3-agent
-description: Delegate subagent for code-writing and helper tasks spawned during a `/p3-mode` run. Use for delegates, not as the runner for `/p3-mode` itself. Spawn a fresh `p3-agent` for each new task, and resume one only in the strict cases that p3-mode's Subagents section names. Reads the `p3-mode` skill's `SKILL.md` in full before any work, including its inline Principles index. Substituting `generalPurpose` skips that read and drifts.
-is_background: true
-model: claude-opus-5-5-xhigh-fast
+description: Brief for a delegated worker spawned during a `/p3-mode` run, for code-writing and helper tasks; not the runner for `/p3-mode` itself. Open every such `delegate_task` brief with this file. Spawn a fresh worker for each new task, and resume one only in the strict cases that p3-mode's Subagents section names.
 ---
 
 # Poteto subagent

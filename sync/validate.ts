@@ -55,12 +55,21 @@ for (const name of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
     if (fields.get("name") !== name) report(skill, null, `frontmatter name is ${JSON.stringify(fields.get("name"))}, expected ${JSON.stringify(name)}`);
     if (!fields.get("description")) report(skill, null, "frontmatter has no description");
     for (const key of config.frontmatterDenied)
-      if (fields.has(key)) report(skill, null, `Cursor-only frontmatter field \`${key}\``);
+      if (fields.has(key)) report(skill, null, `frontmatter field \`${key}\` is not carried`);
   }
 }
 
-const forbidden = config.forbidden.map((rule) => ({ ...rule, regex: new RegExp(rule.pattern, "m") }));
+// Agent briefs are prompts, not harness agent definitions: no model pin or Cursor fields.
+for (const brief of files(join(root, "agents")).filter((path) => path.endsWith(".md"))) {
+  const fields = frontmatter(readFileSync(brief, "utf8"));
+  for (const key of config.frontmatterDenied)
+    if (fields?.has(key)) report(brief, null, `frontmatter field \`${key}\` is not carried`);
+}
+
+const forbidden = config.forbidden.map((rule) => ({ ...rule, regex: new RegExp(rule.pattern, `m${rule.flags ?? ""}`) }));
 const conflict = /^(<{7}|>{7}|\|{7})( |$)|^={7}$/;
+// Left by sync/transform.ts when a rewrite in sync/config.json stops matching upstream.
+const rewriteMiss = "pstack-t3 sync: rewrite";
 // A path inside the skill (`references/x.md`) or a relative Markdown link must exist.
 const localRef = /`((?:references|playbooks|scripts|assets|templates)\/[\w./-]+\.\w+)`|\]\((?!https?:|#|mailto:)([^)\s#]+\.\w+)\)/g;
 
@@ -70,6 +79,7 @@ for (const path of all) {
   const lines = text.split("\n");
   lines.forEach((line, i) => {
     if (conflict.test(line)) report(path, i + 1, "unresolved merge conflict marker");
+    if (line.includes(rewriteMiss)) report(path, i + 1, "a rewrite in sync/config.json no longer matches upstream; fix its pattern");
   });
 
   const rel = relative(root, path);

@@ -39,10 +39,157 @@
     "then /teach ": "then /p3-teach ",
     "**tdd** skill": "**p3-tdd** skill"
   },
+  "rewrites": [
+    {
+      "id": "setup-p3",
+      "paths": [
+        "skills/setup-p3/SKILL.md"
+      ],
+      "file": "setup-p3.md"
+    },
+    {
+      "id": "p3-mode subagent models",
+      "paths": [
+        "skills/p3-mode/SKILL.md"
+      ],
+      "pattern": "^\\*\\*Defaults for every .*\\n\\n- Code, prose, and judgment: .*\\n- Trivial mechanical edits: .*\\n- Diverse review and design panels: .*\\n\\n\\*\\*Fable [^*\\n]*is an exception\\.\\*\\*.*\\n\\n\\*\\*Match the model to the job\\.\\*\\*.*$",
+      "file": "p3-mode-subagent-models.md"
+    },
+    {
+      "id": "feature, refactoring role",
+      "paths": [
+        "skills/p3-mode/playbooks/feature.md",
+        "skills/p3-mode/playbooks/refactoring.md"
+      ],
+      "pattern": "to a subagent using your configured (?:feature|refactoring) model \\(default `[^`]+`\\)",
+      "with": "to a `delegate_task` worker using the `feature, refactoring` role"
+    },
+    {
+      "id": "bug-fix role",
+      "paths": [
+        "skills/p3-mode/playbooks/bug-fix.md"
+      ],
+      "pattern": "to a subagent using your configured bug-fix model \\(default `[^`]+`\\)",
+      "with": "to a `delegate_task` worker using the `bug-fix` role"
+    },
+    {
+      "id": "bug-fix long hunt",
+      "paths": [
+        "skills/p3-mode/playbooks/bug-fix.md"
+      ],
+      "pattern": "Drive a long or stubborn hunt with Cursor's `/loop` command\\.",
+      "with": "Drive a long or stubborn hunt per the **Autonomous run** playbook, with `schedule_task` ticks."
+    },
+    {
+      "id": "perf-issue role",
+      "paths": [
+        "skills/p3-mode/playbooks/perf-issue.md"
+      ],
+      "pattern": "to a subagent using your configured perf-issue model \\(default `[^`]+`\\)",
+      "with": "to a `delegate_task` worker using the `perf-issue` role"
+    },
+    {
+      "id": "hillclimb role",
+      "paths": [
+        "skills/p3-mode/playbooks/hillclimb.md"
+      ],
+      "pattern": "to a subagent using your configured hillclimb model \\(default `[^`]+`\\)",
+      "with": "to a `delegate_task` worker using the `hillclimb` role"
+    },
+    {
+      "id": "eval dispatcher role",
+      "paths": [
+        "skills/p3-mode/playbooks/eval.md"
+      ],
+      "pattern": "An agent that only dispatches, polls, or packs results runs on `[^`]+`\\.",
+      "with": "An agent that only dispatches or packs results runs on the `swarm workers` model at `medium`."
+    },
+    {
+      "id": "arena runners",
+      "paths": [
+        "skills/arena/SKILL.md"
+      ],
+      "pattern": "^(\\d+)\\. Pick the runners from the `arena runners` line.*$",
+      "file": "arena-runners.md"
+    },
+    {
+      "id": "arena judge",
+      "paths": [
+        "skills/arena/SKILL.md"
+      ],
+      "pattern": "^After all Phase B candidates complete, spawn one .*$",
+      "file": "arena-judge.md"
+    },
+    {
+      "id": "swarm workers",
+      "paths": [
+        "skills/swarm/SKILL.md"
+      ],
+      "pattern": "^(\\d+)\\. Pick the worker model from the `swarm workers` line.*$",
+      "file": "swarm-workers.md"
+    },
+    {
+      "id": "p3-help model state",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^- No .*p3-models\\.md.*$",
+      "with": "- No model table in the user's instructions (models scored for Cost, Intelligence and Taste) means every role runs on the parent model."
+    },
+    {
+      "id": "p3-help missing table",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^When the model rule is missing.*\\n\\n- Now: .*\\n- Later: .*$",
+      "file": "p3-help-missing-table.md"
+    },
+    {
+      "id": "p3-help setup steps",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^(\\d+)\\. Install.*\\n(\\d+)\\. Run \\[`/setup-p3`\\].*$",
+      "with": "$1. Install: clone the repository and run `./install.sh`, which links every skill into `~/.agents/skills/` (or `--project <repo>` for one project), or pin the skill directories with whatever manages the user's skills.\n$2. Run [`/setup-p3`](../setup-p3/SKILL.md). It checks that the user's instructions carry the model table every role resolves against, and shows which model each role gets today. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one."
+    },
+    {
+      "id": "p3-help cost",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^If cost is the worry.*$",
+      "file": "p3-help-cost.md"
+    },
+    {
+      "id": "p3-help setup row",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^\\| Pick a model for each role.*$",
+      "with": "| See which model each role gets from the model table in their instructions | [`/setup-p3`](../setup-p3/SKILL.md) |"
+    },
+    {
+      "id": "p3-help model choice row",
+      "paths": [
+        "skills/p3-help/SKILL.md"
+      ],
+      "pattern": "^\\| A new model choice had no effect \\|.*$",
+      "with": "| A new model choice had no effect | The model table lives in the user's agent instructions, which load when a thread starts. Start a new thread. |"
+    },
+    {
+      "id": "p3-agent frontmatter",
+      "paths": [
+        "agents/p3-agent.md"
+      ],
+      "pattern": "^---\\nname: p3-agent\\n(?:[\\w-]+:.*\\n)*---$",
+      "with": "---\nname: p3-agent\ndescription: Brief for a delegated worker spawned during a `/p3-mode` run, for code-writing and helper tasks; not the runner for `/p3-mode` itself. Open every such `delegate_task` brief with this file. Spawn a fresh worker for each new task, and resume one only in the strict cases that p3-mode's Subagents section names.\n---"
+    }
+  ],
   "forbidden": [
     {
-      "pattern": "\\bCursor\\b",
-      "why": "Cursor product reference; name the T3 Code mechanism"
+      "pattern": "(?<!github\\.com/)\\bcursor\\b",
+      "why": "Cursor product reference or `cursor-*` name; name the T3 Code mechanism",
+      "flags": "i"
     },
     {
       "pattern": "\\.cursor/",
@@ -82,7 +229,11 @@
     },
     {
       "pattern": "\\b(claude-(opus|sonnet|haiku|fable)|gpt-\\d|grok-\\d|gemini-\\d)[\\w.-]*",
-      "why": "model slug; resolve roles from orchestrator_capabilities via p3-models.md"
+      "why": "model slug; name a role, which resolves against the model table in your instructions"
+    },
+    {
+      "pattern": "\\b(Opus|Sonnet|Haiku) \\d|\\bFable \\d|\\bGemini \\d|\\bGPT-\\d|\\bcomposer-",
+      "why": "model name; name a role, which resolves against the model table in your instructions"
     },
     {
       "pattern": "cursor-team-kit|/deslop\\b|\\bcontrol-(ui|cli)\\b",
@@ -95,6 +246,14 @@
     {
       "pattern": "cursor\\.sh|Custom Modes?\\b|Agents Window",
       "why": "Cursor product surface"
+    },
+    {
+      "pattern": "p3-models|pstack-models",
+      "why": "separate model list; roles resolve against the model table in your instructions (p3-mode's Subagents section)"
+    },
+    {
+      "pattern": "\\.local/share/p3-stack|p3-stack/p3-agent\\.md",
+      "why": "old p3-stack install; skills come from this repository"
     }
   ],
   "scan": {
@@ -111,6 +270,7 @@
     "icon",
     "color",
     "mode",
-    "reminder"
+    "reminder",
+    "model"
   ]
 }

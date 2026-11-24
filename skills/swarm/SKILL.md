@@ -19,12 +19,12 @@ Open a todolist with one entry per phase before launching anything.
 
 1. State the done predicate and the artifact or report the swarm must return.
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
-3. Pick the worker model from the `swarm workers` line in `p3-models.md`, resolved against `orchestrator_capabilities`; never hardcode a model. If the file or that line is missing, run **setup-p3**, or use the parent model and say so. For `auto` or `inherit-parent`, leave `target` unset so the workers run on the parent model. If an entry's model is not available, use the closest available model of the same family and say so. For a model race, name each arm's model up front. Pick each child's reasoning level for the job, per the Subagents section of the **p3-mode** skill.
+3. Pick the worker model by the `swarm workers` line in the Subagents section of the **p3-mode** skill, which resolves against the model table in your instructions and `orchestrator_capabilities`; never hardcode a model. With no model table, leave `target` unset so the workers run on the parent model, and say so. For a model race, name each arm's model up front. Pick each child's reasoning level for the job, per the Subagents section of the **p3-mode** skill.
 4. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one turn with `delegate_task` and the step 3 target, left unset for `auto` or `inherit-parent`. A worker that writes gets `isolation: "worktree"`, its own checkout of the parent commit. When a worker must start from another pushed branch, name the branch in its brief and have it check that branch out first. A worker that needs another machine gets that machine's `target.environmentId`. Each completion wakes you; never poll.
+Spawn all N workers in one turn with `delegate_task` and the step 3 target, or none when step 3 leaves it unset. A worker that writes gets `isolation: "worktree"`, its own checkout of the parent commit. When a worker must start from another pushed branch, name the branch in its brief and have it check that branch out first. A worker that needs another machine gets that machine's `target.environmentId`. Each completion wakes you; never poll.
 
 Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
 

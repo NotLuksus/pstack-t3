@@ -13,7 +13,7 @@ If you are a delegated worker, your brief names exactly one file. Write only tha
 | pstack | pstack-t3 |
 |---|---|
 | `Task` tool, `subagent_type`, `run_in_background` | `delegate_task` with a self-contained brief. It is async by default: end the turn, and each completion wakes you; read it with `task_status`. Never poll a running task. `task_cancel` to stop |
-| Model slugs | Named roles resolved from `orchestrator_capabilities` by `setup-p3` (role names below). Never hardcode a model. |
+| Model slugs, per-role model rule | Named roles with minimum Cost/Intelligence/Taste scores, resolved against the model table in the user's agent instructions and `orchestrator_capabilities` (role names below). Never hardcode a model. |
 | "cloud agent", `environment: "cloud"`, `cloud_base_branch` | A delegated child task. Use `t3_thread_launch` only when the worker needs its own top-level thread, worktree, or branch. |
 | "each worker gets its own worktree or branch" | `delegate_task` with `isolation: "worktree"`. A worker that needs its own top-level thread: `t3_thread_launch` with `workspaceStrategy`. One writer per worktree. |
 | `/loop`, poll loops, `scripts/watch-pr` | `watch_pull_request`: T3 watches the PR and wakes the thread on checks finishing, new comments, or conflicts. Arm it, end the turn, triage on wake. For other cadences use `schedule_task`. |
@@ -22,7 +22,7 @@ If you are a delegated worker, your brief names exactly one file. Write only tha
 | `agent-transcripts/*.jsonl` mining | `t3_thread_read`, `t3_thread_search`; `t3_queue_list`/`t3_queue_read`/`t3_queue_edit`/`t3_queue_reorder`/`t3_queue_cancel`/`t3_queue_promote_to_steer` for queued input. |
 | `AskQuestion` | Ask plainly in the thread. `t3_pending_request_list`/`t3_pending_request_read`/`t3_pending_request_respond` answer questions in other threads. |
 | `control-ui`, `control-cli` (from cursor-team-kit) | `preview_*` browser tools (`preview_act` clicks, types, presses and scrolls) and `device_*` simulator tools; `preview_recording_start`/`preview_recording_stop` and `device_screenshot` for evidence; `html_preview` and `html_render` show a file to the user. |
-| `~/.cursor/rules/pstack-models.mdc`, `/add-plugin` | `setup-p3` writes `p3-models.md`; install is a symlink of `skills/*` into `~/.agents/skills/`, or a pin per skill (see README). |
+| `/add-plugin` | Install is a symlink of `skills/*` into `~/.agents/skills/`, or a pin per skill (see README). |
 | `poteto-mode`, `poteto-agent`, `poteto-help`, `setup-pstack`, `tdd`, `teach` | `p3-mode`, `agents/p3-agent.md`, `p3-help`, `setup-p3`, `p3-tdd`, `p3-teach` (renamed by `sync/config.json`). |
 | Cursor custom modes ("press option+enter") | Skills are invoked by name (`/p3-mode`). No mode toggles. |
 
@@ -30,9 +30,9 @@ Everything else in pstack transfers as written: the principles, the playbook sha
 
 ## Role names
 
-`p3-models.md` (written by `setup-p3`) has one line per role. Code work reads its playbook's line: `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`. Prose and judgment read `judgment and prose`. Panels read `arena runners`, `arena cross-judge pool`, `interrogate reviewers`; fan-out and verification read `swarm workers`.
+The Subagents section of `skills/p3-mode/SKILL.md` has one line per role with its minimum scores. Code work uses its playbook's role: `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`. Prose and judgment use `judgment and prose`. Panels use `arena runners`, `arena cross-judge pool`, `interrogate reviewers`; fan-out and verification use `swarm workers`.
 
-Keep these names exactly; they follow upstream's.
+Keep these names exactly; they follow upstream's. A role resolves against the model table in the user's agent instructions (the Models and delegation section of the AGENTS.md or CLAUDE.md the harness loads), never against a model list in this repository. `setup-p3` only shows how the roles resolve.
 
 ## Writing rules
 
@@ -59,6 +59,14 @@ merge with a merge commit so `upstream` stays an ancestor of `main`.
 Mechanical changes (a rename, a newly excluded upstream path) belong in `sync/config.json`,
 not in a hand edit, so every later sync repeats them.
 
+Text the fork owns outright, how roles pick models, is a `rewrites` entry in `sync/config.json`
+with its replacement inline or in `sync/rewrites/`. The transform writes it into `upstream` in its
+final form, so `upstream` and `main` agree there and an upstream edit to it never conflicts. To
+change that text, edit the rewrite and the matching text on `main` together. A rewrite whose
+pattern stops matching leaves a marker that `node sync/validate.ts` rejects, so the sync opens a
+pull request; fix the pattern, not the generated text. A rewrite next to a hand-adapted line
+must cover that line too, or the two conflict on the next merge.
+
 ## Layout
 
 - `skills/<name>/SKILL.md` is a skill. `skills/principle-*/SKILL.md` are the short principles.
@@ -79,6 +87,6 @@ not in a hand edit, so every later sync repeats them.
 
 ## Definition of done for a skill
 
-1. Every step names a T3 mechanism or a vendor-neutral habit. `node sync/validate.ts` checks the mechanical part (Cursor names and paths, model slugs, Cursor-only frontmatter, missing references); read for the rest.
+1. Every step names a T3 mechanism or a vendor-neutral habit. `node sync/validate.ts` checks the mechanical part (Cursor names and paths, model slugs, a separate model list, Cursor-only or `model` frontmatter, missing references, rewrites that no longer match); read for the rest.
 2. It is shorter than the pstack source unless the T3 rewrite genuinely needs the lines.
 3. Frontmatter matches the rules above, and references to other skills resolve to files in this repo.

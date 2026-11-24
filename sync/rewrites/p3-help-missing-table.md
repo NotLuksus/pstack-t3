@@ -1,0 +1,1 @@
+When the table is missing and it matters, say that pstack-t3 picks each role's model from a model table in the user's agent instructions, and give them `/setup-p3` to type. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Say it at most once per thread, and answer their question too.

@@ -55,8 +55,15 @@ for (const name of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
     if (fields.get("name") !== name) report(skill, null, `frontmatter name is ${JSON.stringify(fields.get("name"))}, expected ${JSON.stringify(name)}`);
     if (!fields.get("description")) report(skill, null, "frontmatter has no description");
     for (const key of config.frontmatterDenied)
-      if (fields.has(key)) report(skill, null, `Cursor-only frontmatter field \`${key}\``);
+      if (fields.has(key)) report(skill, null, `frontmatter field \`${key}\` is not carried`);
   }
+}
+
+// Agent briefs are prompts, not harness agent definitions: no model pin or Cursor fields.
+for (const brief of files(join(root, "agents")).filter((path) => path.endsWith(".md"))) {
+  const fields = frontmatter(readFileSync(brief, "utf8"));
+  for (const key of config.frontmatterDenied)
+    if (fields?.has(key)) report(brief, null, `frontmatter field \`${key}\` is not carried`);
 }
 
 const forbidden = config.forbidden.map((rule) => ({ ...rule, regex: new RegExp(rule.pattern, "m") }));

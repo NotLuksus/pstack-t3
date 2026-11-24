@@ -14,7 +14,7 @@ Every candidate gets the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners from the `arena runners` line in `p3-models.md` and resolve each entry against `orchestrator_capabilities`; never hardcode a model. If the file or that line is missing, run **setup-p3** first. An `auto` or `inherit-parent` entry is the parent model, so leave `target` unset. If `orchestrator_capabilities` lacks an entry's model, use the nearest available model of the same family or drop the seat, keep at least two runners, and say so. A family is a provider's model line (Claude, with Fable counted as Claude; GPT; Gemini); anything else is its own family. Spawn more for multiple design directions, and repeat one model when the work is generation-bound, not judgment-sensitive. Pick each child's reasoning level per the Subagents section of the **p3-mode** skill.
+3. Pick the runners by the `arena runners` line in the Subagents section of the **p3-mode** skill, which resolves against the model table in your instructions and `orchestrator_capabilities`; never hardcode a model. Keep at least two runners: if fewer distinct models meet the minimums, add the strongest other available one and say so. A family is a provider's model line (Claude, with Fable counted as Claude; GPT; Gemini); anything else is its own family. Spawn more for multiple design directions, and repeat one model when the work is generation-bound, not judgment-sensitive. Pick each child's reasoning level per the Subagents section of the **p3-mode** skill.
 4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out
@@ -25,7 +25,7 @@ If a candidate produces no output, proceed with N-1 and note the dropout.
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, spawn one read-only judge with `delegate_task` from the `arena cross-judge pool` line in `p3-models.md`; its brief says it reads and scores and edits nothing. The judge is never from the parent's vendor, and Fable counts as Claude for that check, so use the first entry from another vendor. An `auto` or `inherit-parent` entry is the parent model. If you do not know the parent's model, use the first entry and say that the vendor check did not run. If `orchestrator_capabilities` lacks an entry's model, use the nearest available model of the same family, then the next entry, or skip the judge, and say so. While you read in Phase D, the judge scores each candidate, by path label, on each rubric criterion and recommends a base.
+After all Phase B candidates complete, spawn one read-only judge with `delegate_task` by the `arena cross-judge pool` line in the Subagents section of the **p3-mode** skill; its brief says it reads and scores and edits nothing. The judge is never from the parent's vendor, and Fable counts as Claude for that check, so resolve the line among the other vendors' models. If you do not know the parent's model, resolve the line across all vendors and say that the vendor check did not run. If no other vendor's model is available, skip the judge and say so. While you read in Phase D, the judge scores each candidate, by path label, on each rubric criterion and recommends a base.
 
 ## Phase D: Pick a base
 

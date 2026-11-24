@@ -1,10 +1,13 @@
 // The mechanical half of the adaptation: which upstream files the fork carries, under
 // which paths and identifiers. Its output is the `upstream` branch. The prose half (Cursor
 // mechanisms rewritten as T3 Code ones) lives as commits on `main`, and git's three-way merge
-// of `upstream` into `main` carries it forward. Anything that needs judgment stays out of here.
+// of `upstream` into `main` carries it forward. Anything that needs judgment stays out of here,
+// except `rewrites`: text the fork owns outright (how roles pick models), written in its final
+// form so `upstream` and `main` agree on it and an upstream edit there can never conflict.
+// A rewrite whose pattern stops matching leaves a marker that `sync/validate.ts` rejects.
 //
 // Usage: node sync/transform.ts <upstream checkout> <output dir>
-import { chmodSync, cpSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { loadConfig } from "./config.ts";
 
@@ -61,5 +64,33 @@ for (const file of files(source)) {
   else writeFileSync(target, rewrite(text));
   chmodSync(target, statSync(file).mode & 0o777);
   count++;
+}
+
+for (const rewrite of config.rewrites) {
+  const replacement =
+    "with" in rewrite ? rewrite.with : readFileSync(new URL(`./rewrites/${rewrite.file}`, import.meta.url), "utf8");
+  for (const path of rewrite.paths) {
+    const target = join(out, path);
+    if (!existsSync(target)) {
+      console.error(`rewrite "${rewrite.id}": ${path} is not in upstream; update sync/config.json`);
+      process.exit(1);
+    }
+    if (rewrite.pattern === undefined) {
+      writeFileSync(target, replacement);
+      continue;
+    }
+    const text = readFileSync(target, "utf8");
+    const pattern = new RegExp(rewrite.pattern, "gm");
+    const matches = [...text.matchAll(pattern)].length;
+    if (matches === 1) {
+      writeFileSync(target, text.replace(pattern, () => replacement.replace(/\n$/, "")));
+    } else {
+      console.error(`rewrite "${rewrite.id}": matched ${matches} times in ${path}, expected 1`);
+      writeFileSync(
+        target,
+        `${text.replace(/\n*$/, "\n")}\n<!-- pstack-t3 sync: rewrite "${rewrite.id}" matched ${matches} times, expected 1; update it in sync/config.json -->\n`,
+      );
+    }
+  }
 }
 console.log(`transformed ${count} files from ${source} into ${out}`);

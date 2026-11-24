@@ -52,7 +52,7 @@
       "paths": [
         "skills/p3-mode/SKILL.md"
       ],
-      "pattern": "^\\*\\*Defaults for every [\\s\\S]*?^\\*\\*Match the model to the job\\.\\*\\*.*$",
+      "pattern": "^\\*\\*Defaults for every .*\\n\\n- Code, prose, and judgment: .*\\n- Trivial mechanical edits: .*\\n- Diverse review and design panels: .*\\n\\n\\*\\*Fable [^*\\n]*is an exception\\.\\*\\*.*\\n\\n\\*\\*Match the model to the job\\.\\*\\*.*$",
       "file": "p3-mode-subagent-models.md"
     },
     {
@@ -109,7 +109,7 @@
       "paths": [
         "skills/arena/SKILL.md"
       ],
-      "pattern": "^\\d+\\. Pick the runners from the `arena runners` line.*$",
+      "pattern": "^(\\d+)\\. Pick the runners from the `arena runners` line.*$",
       "file": "arena-runners.md"
     },
     {
@@ -125,7 +125,7 @@
       "paths": [
         "skills/swarm/SKILL.md"
       ],
-      "pattern": "^\\d+\\. Pick the worker model from the `swarm workers` line.*$",
+      "pattern": "^(\\d+)\\. Pick the worker model from the `swarm workers` line.*$",
       "file": "swarm-workers.md"
     },
     {
@@ -141,7 +141,7 @@
       "paths": [
         "skills/p3-help/SKILL.md"
       ],
-      "pattern": "^When the model rule is missing[\\s\\S]*?^- Later: .*$",
+      "pattern": "^When the model rule is missing.*\\n\\n- Now: .*\\n- Later: .*$",
       "file": "p3-help-missing-table.md"
     },
     {
@@ -149,8 +149,8 @@
       "paths": [
         "skills/p3-help/SKILL.md"
       ],
-      "pattern": "^\\d+\\. Install[\\s\\S]*?^\\d+\\. Run \\[`/setup-p3`\\].*$",
-      "with": "1. Install: clone the repository and run `./install.sh`, which links every skill into `~/.agents/skills/` (or `--project <repo>` for one project), or pin the skill directories with whatever manages the user's skills.\n2. Run [`/setup-p3`](../setup-p3/SKILL.md). It checks that the user's instructions carry the model table every role resolves against, and shows which model each role gets today. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one."
+      "pattern": "^(\\d+)\\. Install.*\\n(\\d+)\\. Run \\[`/setup-p3`\\].*$",
+      "with": "$1. Install: clone the repository and run `./install.sh`, which links every skill into `~/.agents/skills/` (or `--project <repo>` for one project), or pin the skill directories with whatever manages the user's skills.\n$2. Run [`/setup-p3`](../setup-p3/SKILL.md). It checks that the user's instructions carry the model table every role resolves against, and shows which model each role gets today. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one."
     },
     {
       "id": "p3-help cost",
@@ -181,14 +181,15 @@
       "paths": [
         "agents/p3-agent.md"
       ],
-      "pattern": "^---\\nname: p3-agent\\n[\\s\\S]*?^---$",
+      "pattern": "^---\\nname: p3-agent\\n(?:[\\w-]+:.*\\n)*---$",
       "with": "---\nname: p3-agent\ndescription: Brief for a delegated worker spawned during a `/p3-mode` run, for code-writing and helper tasks; not the runner for `/p3-mode` itself. Open every such `delegate_task` brief with this file. Spawn a fresh worker for each new task, and resume one only in the strict cases that p3-mode's Subagents section names.\n---"
     }
   ],
   "forbidden": [
     {
-      "pattern": "\\bCursor\\b",
-      "why": "Cursor product reference; name the T3 Code mechanism"
+      "pattern": "(?<!github\\.com/)\\bcursor\\b",
+      "why": "Cursor product reference or `cursor-*` name; name the T3 Code mechanism",
+      "flags": "i"
     },
     {
       "pattern": "\\.cursor/",
@@ -231,6 +232,10 @@
       "why": "model slug; name a role, which resolves against the model table in your instructions"
     },
     {
+      "pattern": "\\b(Opus|Sonnet|Haiku) \\d|\\bFable \\d|\\bGemini \\d|\\bGPT-\\d|\\bcomposer-",
+      "why": "model name; name a role, which resolves against the model table in your instructions"
+    },
+    {
       "pattern": "cursor-team-kit|/deslop\\b|\\bcontrol-(ui|cli)\\b",
       "why": "Cursor team-kit skill; use unslop or preview_*/device_*"
     },
@@ -249,10 +254,6 @@
     {
       "pattern": "\\.local/share/p3-stack|p3-stack/p3-agent\\.md",
       "why": "old p3-stack install; skills come from this repository"
-    },
-    {
-      "pattern": "pstack-t3 sync: rewrite",
-      "why": "a rewrite in sync/config.json no longer matches upstream; fix its pattern"
     }
   ],
   "scan": {

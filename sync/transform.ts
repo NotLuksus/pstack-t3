@@ -83,7 +83,8 @@ for (const rewrite of config.rewrites) {
     const pattern = new RegExp(rewrite.pattern, "gm");
     const matches = [...text.matchAll(pattern)].length;
     if (matches === 1) {
-      writeFileSync(target, text.replace(pattern, () => replacement.replace(/\n$/, "")));
+      // A string replacement, so `$1` keeps a captured step number; no rewrite text uses `$` otherwise.
+      writeFileSync(target, text.replace(pattern, replacement.replace(/\n$/, "")));
     } else {
       console.error(`rewrite "${rewrite.id}": matched ${matches} times in ${path}, expected 1`);
       writeFileSync(

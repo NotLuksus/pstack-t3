@@ -5,7 +5,7 @@
 - `feature, refactoring`: taste ≥ 7.
 - `bug-fix`: taste ≥ 7, intelligence ≥ 8.
 - `perf-issue`: taste ≥ 7, intelligence ≥ 8.
-- `hillclimb`: taste ≥ 7.
+- `hillclimb`: taste ≥ 7, intelligence ≥ 8. It runs long and on its own.
 - `judgment and prose`: taste ≥ 8, intelligence ≥ 9.
 - `swarm workers`: taste ≥ 7. Read-only grunt work (triage, log and CI reading, inventories) follows the table's grunt-work rule instead.
 - `arena runners`: taste ≥ 8. One seat per distinct model, up to three, spread across providers.
@@ -16,4 +16,4 @@ Resolve a role when you call `delegate_task`: take the table's models that meet 
 
 **Escalate on results, not difficulty.** When two runs of the same brief fail its check, move the next run to a model with higher intelligence. Say which.
 
-**Match the reasoning level to the job.** The code roles and `judgment and prose` start at `xhigh`; panel seats and `swarm workers` start at `high`. Raise one step, up to xhigh, for the hardest or subtlest work, lower one step for judgment, and two or more steps for routine work. No role runs above xhigh. If the model lacks that level, use the highest one below it. Verification always runs on the `swarm workers` role. If `delegate_task` rejects a model, never pass it again: take the next model that meets the role's minimums, else leave `target` unset. Say so.
+**Match the reasoning level to the job.** The code roles and `judgment and prose` start at `xhigh`; panel seats and `swarm workers` start at `high`. Raise one step, up to xhigh, for the hardest or subtlest work, lower one step for judgment, and two or more steps for routine work. No role runs above xhigh. If the model lacks that level, use the highest one below it. Running checks and gathering proof uses the `swarm workers` role, but confirming a candidate before it becomes a blocking finding takes your instructions' verifier minimums (intelligence ≥ 9, taste ≥ 8). If `delegate_task` rejects a model, never pass it again: take the next model that meets the role's minimums, else leave `target` unset. Say so.

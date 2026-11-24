@@ -4,7 +4,9 @@ import { readFileSync } from "node:fs";
  * One rewrite of upstream text into its final T3 Code form. `pattern` is a JavaScript regular
  * expression (multiline, so `^` and `$` match at line ends) that must match exactly once in each
  * path; without `pattern` the rewrite replaces the whole file. The replacement is `with`, or the
- * text of `file` (relative to `sync/rewrites/`, a trailing newline dropped when `pattern` is set).
+ * text of `file` (relative to `sync/rewrites/`, a trailing newline dropped when `pattern` is set),
+ * and `$1`… insert the pattern's groups. A span pattern names every paragraph it may contain, so an
+ * upstream insertion inside it is a miss, never silently dropped.
  */
 export type Rewrite = {
   /** Shown in the marker a miss leaves behind. */
@@ -25,7 +27,7 @@ export type Config = {
   /** Text the fork owns outright, applied after `replaceText`. */
   rewrites: Rewrite[];
   /** Patterns that must not survive in the scanned files. */
-  forbidden: { pattern: string; why: string }[];
+  forbidden: { pattern: string; flags?: string; why: string }[];
   scan: { extensions: string[]; skip: string[] };
   /** Frontmatter keys the fork never carries in a skill or agent brief. */
   frontmatterDenied: string[];

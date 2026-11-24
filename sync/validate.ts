@@ -66,8 +66,10 @@ for (const brief of files(join(root, "agents")).filter((path) => path.endsWith("
     if (fields?.has(key)) report(brief, null, `frontmatter field \`${key}\` is not carried`);
 }
 
-const forbidden = config.forbidden.map((rule) => ({ ...rule, regex: new RegExp(rule.pattern, "m") }));
+const forbidden = config.forbidden.map((rule) => ({ ...rule, regex: new RegExp(rule.pattern, `m${rule.flags ?? ""}`) }));
 const conflict = /^(<{7}|>{7}|\|{7})( |$)|^={7}$/;
+// Left by sync/transform.ts when a rewrite in sync/config.json stops matching upstream.
+const rewriteMiss = "pstack-t3 sync: rewrite";
 // A path inside the skill (`references/x.md`) or a relative Markdown link must exist.
 const localRef = /`((?:references|playbooks|scripts|assets|templates)\/[\w./-]+\.\w+)`|\]\((?!https?:|#|mailto:)([^)\s#]+\.\w+)\)/g;
 
@@ -77,6 +79,7 @@ for (const path of all) {
   const lines = text.split("\n");
   lines.forEach((line, i) => {
     if (conflict.test(line)) report(path, i + 1, "unresolved merge conflict marker");
+    if (line.includes(rewriteMiss)) report(path, i + 1, "a rewrite in sync/config.json no longer matches upstream; fix its pattern");
   });
 
   const rel = relative(root, path);
